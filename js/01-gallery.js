@@ -1,12 +1,25 @@
 import { galleryItems } from "./gallery-items.js";
 // Change code below this line
 const gallery = document.querySelector(".gallery");
-const markup = galleryItems
-  .map(
-    ({ preview, original, description }) =>
-      `<li class="gallery__item"><img src="${preview}" alt="${description}" class="gallery__image"></li>`
-  )
-  .join("");
+const galleryItemsMarkup = createCardsMarkup(galleryItems);
 
-gallery.insertAdjacentHTML("beforeend", markup);
+function createCardsMarkup(items) {
+  return items
+    .map(
+      ({ preview, original, description }) =>
+        `<li class="gallery__item">
+            <a class="gallery__link" href="${original}">
+             <img
+               class="gallery__image"
+               src="${preview}"
+               data-source="large-image.jpg"
+              alt="${description}"
+              />
+            </a>
+         </li>`
+    )
+    .join("");
+}
+
+gallery.insertAdjacentHTML("beforeend", galleryItemsMarkup);
 console.log(galleryItems);
