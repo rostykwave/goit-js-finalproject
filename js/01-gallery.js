@@ -1,7 +1,9 @@
 import { galleryItems } from "./gallery-items.js";
 // Change code below this line
-const gallery = document.querySelector(".gallery");
+const galleryContainer = document.querySelector(".gallery");
 const galleryItemsMarkup = createCardsMarkup(galleryItems);
+galleryContainer.insertAdjacentHTML("beforeend", galleryItemsMarkup);
+galleryContainer.addEventListener("click", onImageClick);
 
 function createCardsMarkup(items) {
   return items
@@ -12,7 +14,7 @@ function createCardsMarkup(items) {
              <img
                class="gallery__image"
                src="${preview}"
-               data-source="large-image.jpg"
+               data-source="${original}"
               alt="${description}"
               />
             </a>
@@ -21,5 +23,35 @@ function createCardsMarkup(items) {
     .join("");
 }
 
-gallery.insertAdjacentHTML("beforeend", galleryItemsMarkup);
-console.log(galleryItems);
+function onImageClick(e) {
+  e.preventDefault();
+
+  if (e.target.nodeName !== "IMG") {
+    return;
+  }
+
+  const originalImageSource = e.target.getAttribute("data-source");
+  const altOfOriginalImage = e.target.getAttribute("alt");
+
+  const instance = basicLightbox.create(
+    `
+		<img src="${originalImageSource}"  alt="${altOfOriginalImage}">
+	`,
+    {
+      onShow: (instance) => {
+        document.addEventListener("keydown", onESCKeydown);
+      },
+      onClose: (instance) => {
+        document.removeEventListener("keydown", onESCKeydown);
+      },
+    }
+  );
+
+  instance.show();
+
+  function onESCKeydown(e) {
+    if (e.code === "Escape") {
+      instance.close();
+    }
+  }
+}
